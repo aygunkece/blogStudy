@@ -1,0 +1,17 @@
+.card-info {
+    display: flex;
+    justify-content: space-between; /* Elementleri yatayda aralık bırakarak yerleştirir */
+    align-items: center; /* Elemanları dikeyde hizalar */
+}
+
+.card-title {
+    margin: 0; /* Başlık elementinin marjını sıfırlar */
+}
+
+.author-info, .rating-info {
+    text-align: right; /* Diğer elementleri sağa hizalar */
+}
+.author-info {
+    margin-left: 25%;
+}
+.
