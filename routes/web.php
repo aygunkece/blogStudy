@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,8 +32,16 @@ Route::prefix("admin")->middleware("role:admin")->group(function (){
 });
 Route::prefix("writer")->middleware("role:writer")->group(function (){
     Route::get("/", function (){
-        return view('front.index');
+        return view('writer.index');
     })->name("writer.index");
+    Route::get('/makale-ekle', [ArticleController::class, 'create'])->name('article.create');
+    Route::post('/makale-ekle', [ArticleController::class, 'store']);
+    Route::get('/makale-listesi', [ArticleController::class, 'index'])->name('articles');
+    Route::get('/makale/{article}/duzenle', [ArticleController::class, 'edit'])->name('article.edit');
+    Route::put('/makale/{article}/duzenle', [ArticleController::class, 'update']);
+    Route::delete('/makale-sil', [ArticleController::class, 'destroy'])->name('article.destroy');
+
+
 });
 Route::prefix("moderator")->middleware("role:moderator")->group(function (){
     Route::get("/", function (){

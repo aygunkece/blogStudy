@@ -129,10 +129,11 @@
 <script src="{{ asset("/assets/admin/plugins/summernote/summernote-lite.min.js") }}"></script>
 <script src="{{ asset("/assets/admin/js/pages/text-editor.js") }}"></script>
 <script>
-    $("#publish_date").flatpickr({
+    $("#publishDate").flatpickr({
         enableTime: true,
         dateFormat: "Y-m-d H:i",
     });
 </script>
+@yield('js')
 </body>
 </html>
