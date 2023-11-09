@@ -26,7 +26,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix("admin")->middleware("role:admin")->group(function (){
     Route::get("/", function (){
-        return view('admin.create-update');
+        return view('admin.article-list');
     })->name("admin.index");
 });
 Route::prefix("writer")->middleware("role:writer")->group(function (){
@@ -36,7 +36,7 @@ Route::prefix("writer")->middleware("role:writer")->group(function (){
 });
 Route::prefix("moderator")->middleware("role:moderator")->group(function (){
     Route::get("/", function (){
-        return "moderatöre geldi";
+        return view('moderator.index');
     })->name("moderator.index");
 });
 Route::get("/", function (){

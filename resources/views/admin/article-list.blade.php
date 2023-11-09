@@ -13,6 +13,7 @@
                     <th scope="col">First</th>
                     <th scope="col">Last</th>
                     <th scope="col">Handle</th>
+                    <th scope="col">İşlemler</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,6 +22,20 @@
                     <td>Mark</td>
                     <td>Otto</td>
                     <td>@mdo</td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="#"
+                               class="btn btn-warning btn-sm">
+                                <i class="material-icons ms-0">edit</i>
+                            </a>
+                            <a href="javascript:void(0)"
+                               class="btn btn-danger btn-sm btnDelete"
+                               data-name="article_title"
+                               data-id="{article_id">
+                                <i class="material-icons ms-0">delete</i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row">2</th>
