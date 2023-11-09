@@ -22,6 +22,8 @@
     <link href="{{ asset('/assets/admin/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/assets/admin/plugins/perfectscroll/perfect-scrollbar.css') }}" rel="stylesheet">
     <link href="{{ asset('/assets/admin/plugins/pace/pace.css') }}" rel="stylesheet">
+    <link href="{{ asset('/assets/admin/plugins/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/assets/admin/plugins/summernote/summernote-lite.min.css') }}" rel="stylesheet">
 
 
     <!-- Theme Styles -->
@@ -82,17 +84,18 @@
                     <div class="d-flex">
                         @auth
                         <ul class="navbar-nav ml-auto">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                             <li class="nav-item hidden-on-mobile">
                                 <a class="nav-link active" href="#">{{ Auth::user()->name }}</a>
                             </li>
                             <li class="nav-item hidden-on-mobile">
                                 <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
-                            document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
+        document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
                             </li>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
 
                         </ul>
                         @endauth
@@ -106,7 +109,6 @@
                     <div class="row">
                      @yield("content")
                     </div>
-
                 </div>
             </div>
         </div>
@@ -122,5 +124,15 @@
 <script src="{{ asset('/assets/admin/js/main.min.js') }}"></script>
 <script src="{{ asset('/assets/admin/js/custom.js') }}"></script>
 <script src="{{ asset('/assets/admin/js/pages/dashboard.js') }}"></script>
+<script src="{{ asset("/assets/admin/plugins/flatpickr/flatpickr.js") }}"></script>
+<script src="{{ asset("/assets/admin/js/pages/datepickers.js") }}"></script>
+<script src="{{ asset("/assets/admin/plugins/summernote/summernote-lite.min.js") }}"></script>
+<script src="{{ asset("/assets/admin/js/pages/text-editor.js") }}"></script>
+<script>
+    $("#publish_date").flatpickr({
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+    });
+</script>
 </body>
 </html>

@@ -26,7 +26,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix("admin")->middleware("role:admin")->group(function (){
     Route::get("/", function (){
-        return view('admin.index');
+        return view('admin.create-update');
     })->name("admin.index");
 });
 Route::prefix("writer")->middleware("role:writer")->group(function (){
