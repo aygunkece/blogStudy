@@ -24,9 +24,8 @@ class ArticleStoreRequest extends FormRequest
         return [
             'title' => ['required', 'max:255'],
             'content' => ['required'],
-            'image' => ['required','image', 'mimetypes:jpeg,jpg,png', 'size:2048'],
-            'publish_date' => ['required'],
-
+            'image' => ['required', 'image', 'mimetypes:image/jpeg,image/jpg,image/png', "max:2048"],
+            'publish_date' => ['required']
         ];
     }
 }

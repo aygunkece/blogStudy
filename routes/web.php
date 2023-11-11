@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +28,11 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix("admin")->middleware("role:admin")->group(function (){
     Route::get("/", function (){
-        return view('admin.article-list');
+        return view('admin.index');
     })->name("admin.index");
+
+    Route::get('/makale-listesi', [AdminController::class, 'create'])->name('admin.articles');
+    Route::post('/makale-listesi', [AdminController::class, 'store']);
 });
 Route::prefix("writer")->middleware("role:writer")->group(function (){
     Route::get("/", function (){
@@ -38,7 +42,9 @@ Route::prefix("writer")->middleware("role:writer")->group(function (){
     Route::post('/makale-ekle', [ArticleController::class, 'store']);
     Route::get('/makale-listesi', [ArticleController::class, 'index'])->name('articles');
     Route::get('/makale/{article}/duzenle', [ArticleController::class, 'edit'])->name('article.edit');
-    Route::put('/makale/{article}/duzenle', [ArticleController::class, 'update']);
+    Route::post('/makale/{article}/duzenle', [ArticleController::class, 'update']);
+    Route::post('article/change-status', [ArticleController::class, 'changeStatus'])->name("article.changeStatus");
+
     Route::delete('/makale-sil', [ArticleController::class, 'destroy'])->name('article.destroy');
 
 

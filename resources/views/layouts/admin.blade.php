@@ -45,7 +45,7 @@
 <div class="app align-content-stretch d-flex flex-wrap">
     <div class="app-sidebar">
         <div class="logo">
-            <a href="index.html" class="logo-icon"><span class="text-dark">BLOGADMIN.</span></a>
+            <a href="#" class="logo-icon"><span class="text-dark">BLOGADMIN.</span></a>
 
         </div>
         <div class="app-menu">
@@ -54,10 +54,10 @@
                     İşlemler
                 </li>
                 <li class="active-page">
-                    <a href="index.html" class="active"><i class="material-icons-two-tone text-dark ">post_add</i>Makale Ekle</a>
+                    <a href="{{ route('article.create') }}" class="active"><i class="material-icons-two-tone text-dark ">post_add</i>Makale Ekle</a>
                 </li>
                 <li>
-                    <a href="mailbox.html"><i class="material-icons-two-tone text-dark ">article</i>Makale Listesi</a>
+                    <a href="{{ route('articles') }}"><i class="material-icons-two-tone text-dark ">article</i>Makale Listesi</a>
                 </li>
 
             </ul>
