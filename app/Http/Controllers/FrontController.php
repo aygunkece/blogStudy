@@ -4,13 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Rating;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
     public function index()
     {
-     $list = Article::all();
+
+        $currentDateTime = Carbon::now();
+
+        $articles = Article::where('status',1)
+            ->where('publish_date','<=', $currentDateTime)
+            ->with('ratings')
+            ->get();
+
+        $articles->transform(function ($article) {
+            $ratings = $article->ratings;
+            $ratingsCount = $ratings->count();
+            $ratingsSum = $ratings->sum('value');
+
+            $article->average_rating = ($ratingsCount > 0)
+                ? number_format((($ratingsSum / $ratingsCount) * 0.7) + (($ratings->last()->value * 2) / 5 * 0.3), 2)
+                : 0;
+
+            return $article;
+        });
+
+        $list = $articles->sortByDesc('average_rating');
 
         return view('front.index', compact('list'));
     }
@@ -18,8 +39,18 @@ class FrontController extends Controller
     public function articleDetail(Article $article)
     {
         $articleID = $article->id;
+        $previousArticle = Article::where('id', '<', $articleID)
+            ->where('status', 1)
+            ->where('publish_date', '<=', now())
+            ->orderBy('id', 'desc')
+            ->first();
 
-        // Makalenin ortalama puanını hesapla
+        $nextArticle = Article::where('id', '>', $articleID)
+            ->where('status', 1)
+            ->where('publish_date', '<=', now())
+            ->orderBy('id', 'asc')
+            ->first();
+
         $ratings = Rating::where('article_id', $articleID)->get();
         $ratingsCount = $ratings->count();
         $ratingsSum = $ratings->sum('value');
@@ -29,9 +60,8 @@ class FrontController extends Controller
             ? number_format((($ratingsSum / $ratingsCount) * 0.7) + (($ratings->last()->value * 2) / 5 * 0.3), 2)
             : 0;
 
-        return view('front.article-detail',compact('article'));
+        return view('front.article-detail',compact('article','previousArticle', 'nextArticle'));
     }
-
     public function rate(Request $request)
     {
         $articleID = $request->articleID;
@@ -40,23 +70,21 @@ class FrontController extends Controller
         if ($user) {
             $ratingValue = $request->input('rating');
 
-            // Kullanıcı daha önce bu makaleye puan vermiş mi kontrol et
+
             $existingRating = Rating::where('user_id', $user->id)
                 ->where('article_id', $articleID)
                 ->first();
 
             if ($existingRating) {
-                // Kullanıcı daha önce puan verdiyse güncelle
                 $existingRating->update(['value' => $ratingValue]);
             } else {
-                // Yeni puan ekle
                 Rating::create([
                     'user_id' => $user->id,
                     'article_id' => $articleID,
                     'value' => $ratingValue,
                 ]);
             }
-            // Puanlama algoritması: Oyların son %30'u kalan %70'e göre 2 kat daha etkili
+
             $ratings = Rating::query()->where('article_id', $articleID)->get();
             $ratingsCount = $ratings->count();
             $ratingsSum = $ratings->sum('value');
@@ -66,8 +94,8 @@ class FrontController extends Controller
             return response()->json(['success' => true, 'average_rating' => $weightedAverage]);
         }
 
-        // Kullanıcı oturum açmamışsa
         return response()->json(['error' => 'Unauthorized'], 401);
 
     }
+
 }

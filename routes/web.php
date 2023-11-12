@@ -21,9 +21,10 @@ Auth::routes();
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+
 Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/makale/{article}/detay', [FrontController::class, 'articleDetail'])->name('front.article-detail');
+
 
 Route::post('article/rate', [FrontController::class, 'rate'])->name("front.rate");
 Route::post('article/get-rating', [FrontController::class, 'articleDetail'])->name("front.get-rating");

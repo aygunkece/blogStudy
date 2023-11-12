@@ -15,7 +15,7 @@
 <body>
 <nav class="navbar navbar-expand-lg text-bg-dark">
     <div class="container ">
-        <a class="navbar-brand text-white" href="#">BLOG.</a>
+        <a class="navbar-brand text-white" href="{{ route('front.index')}}">BLOG.</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon text-white"></span>
@@ -23,10 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active text-white" aria-current="page" href="#">Makaleler</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#"> Son Makaleler </a>
+                    <a class="nav-link active text-white" aria-current="page" href="{{ route('front.index')}}">Anasayfa</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -45,7 +42,14 @@
                     @endif
                 @else
                         <li class="nav-item d-flex align-items-center me-3">
+                               @if(Auth::user()->hasRole('writer'))
+                                <a href="{{ route('writer.index') }}" class="text-decoration-none btn btn-outline-secondary text-white"> {{ Auth::user()->name }}</a>
+                            @elseif(Auth::user()->hasRole('admin'))
+                                <a href="{{ route('admin.index') }}" class="text-decoration-none btn btn-outline-secondary text-white"> {{ Auth::user()->name }}</a>
+                            @else
                                 {{ Auth::user()->name }}
+                               @endif
+
                           </li>
                         <li class="nav-item">
                             <a class="btn btn-outline-secondary text-white" href="{{ route('logout') }}" onclick="event.preventDefault();
@@ -65,50 +69,11 @@
 <div class="container mt-3">
     <div class="row d-flex">
 
-        <div class="col-12 col-md-9">
+        <div class="col-12">
             @yield("content")
 
         </div>
-        <div class="col-12 col-md-3 d-flex">
-            <ul class="list-group mx-auto">
-                <li class="list-group-item disabled" aria-disabled="true">Popüler Kategoriler</li>
-                <li class="list-group-item">
-                    <div class="card" style="width: 18rem;">
-                        <img src="{{ asset('/assets/front/image/blog.jpeg') }}" class="card-img-top" style="height: 9rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="card" style="width: 18rem;">
-                        <img src="{{ asset('/assets/front/image/blog.jpeg') }}" class="card-img-top" style="height: 9rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="card" style="width: 18rem;">
-                        <img src="{{ asset('/assets/front/image/blog.jpeg') }}" class="card-img-top" style="height: 9rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </li>
 
-
-            </ul>
-        </div>
     </div>
 </div>
 

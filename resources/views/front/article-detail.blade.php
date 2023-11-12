@@ -21,6 +21,17 @@
                     {!! $article->content !!}
                 </p>
             </div>
+            <div class="card-footer d-flex justify-content-between">
+                    @if ($previousArticle)
+                        <a class="btn btn-outline-secondary" href="{{ route('front.article-detail', $previousArticle->id) }}">Önceki Makale</a>
+                    @endif
+
+
+                    @if ($nextArticle)
+                        <a class="btn btn-outline-secondary" href="{{ route('front.article-detail', $nextArticle->id) }}">Sonraki Makale</a>
+                    @endif
+
+            </div>
         </div>
 
 
