@@ -53,12 +53,20 @@
                 <li class="sidebar-title">
                     İşlemler
                 </li>
+                @role('writer')
                 <li class="active-page">
                     <a href="{{ route('article.create') }}" class="active"><i class="material-icons-two-tone text-dark ">post_add</i>Makale Ekle</a>
                 </li>
                 <li>
                     <a href="{{ route('articles') }}"><i class="material-icons-two-tone text-dark ">article</i>Makale Listesi</a>
                 </li>
+                @endrole
+                @role('admin')
+                <li>
+                    <a href="{{ route('admin.articles') }}"><i class="material-icons-two-tone text-dark ">article</i>Makale Listesi</a>
+                </li>
+                @endrole
+
 
             </ul>
         </div>

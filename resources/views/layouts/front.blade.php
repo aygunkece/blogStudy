@@ -131,6 +131,6 @@
 <script src="{{ asset("assets/front/js/jquery.min.js") }}"></script>
 <script src="{{ asset("assets/front/js/main.js") }}"></script>
 <script src="https://kit.fontawesome.com/b0be4e7251.js" crossorigin="anonymous"></script>
-
+@yield('js')
 </body>
 </html>

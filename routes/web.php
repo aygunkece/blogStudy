@@ -3,6 +3,8 @@
 use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,23 +18,31 @@ use App\Http\Controllers\AdminController;
 */
 Auth::routes();
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [FrontController::class, 'index'])->name('front.index');
+Route::get('/makale/{article}/detay', [FrontController::class, 'articleDetail'])->name('front.article-detail');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('article/rate', [FrontController::class, 'rate'])->name("front.rate");
+Route::post('article/get-rating', [FrontController::class, 'articleDetail'])->name("front.get-rating");
 
+/*Route::get("/", function (){
+    return view('front.article-detail');
+});*/
 
 Route::prefix("admin")->middleware("role:admin")->group(function (){
     Route::get("/", function (){
         return view('admin.index');
     })->name("admin.index");
 
-    Route::get('/makale-listesi', [AdminController::class, 'create'])->name('admin.articles');
-    Route::post('/makale-listesi', [AdminController::class, 'store']);
+    Route::get('/makale-listesi', [AdminController::class, 'index'])->name('admin.articles');
+    Route::get('/makale/{article}/duzenle', [AdminController::class, 'edit'])->name('admin.article.edit');
+    Route::post('/makale/{article}/duzenle', [AdminController::class, 'update']);
+    Route::post('article/change-status', [AdminController::class, 'changeStatus'])->name("admin.article.changeStatus");
+    Route::delete('/makale-sil', [AdminController::class, 'destroy'])->name('admin.article.destroy');
+
 });
 Route::prefix("writer")->middleware("role:writer")->group(function (){
     Route::get("/", function (){
@@ -54,8 +64,6 @@ Route::prefix("moderator")->middleware("role:moderator")->group(function (){
         return view('moderator.index');
     })->name("moderator.index");
 });
-Route::get("/", function (){
-   return view('front.index');
-})->name("index");
+
 
 

@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
+        "mews/purifier": "^3.4",
         "rap2hpoutre/laravel-log-viewer": "^2.3",
         "spatie/laravel-permission": "^6.0"
     },
