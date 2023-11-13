@@ -29,10 +29,6 @@ Route::get('/makale/{article}/detay', [FrontController::class, 'articleDetail'])
 Route::post('article/rate', [FrontController::class, 'rate'])->name("front.rate");
 Route::post('article/get-rating', [FrontController::class, 'articleDetail'])->name("front.get-rating");
 
-/*Route::get("/", function (){
-    return view('front.article-detail');
-});*/
-
 Route::prefix("admin")->middleware("role:admin")->group(function (){
     Route::get("/", function (){
         return view('admin.index');
