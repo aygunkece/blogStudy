@@ -13,40 +13,43 @@ class FrontController extends Controller
     public function index()
     {
         $cachedArticles = Redis::get('cached_articles');
+
         if (!$cachedArticles) {
-        $currentDateTime = Carbon::now();
+            $currentDateTime = Carbon::now();
 
-        $articles = Article::where('status',1)
-            ->where('publish_date','<=', $currentDateTime)
-            ->with('ratings')
-            ->get();
+            $articles = Article::where('status', 1)
+                ->where('publish_date', '<=', $currentDateTime)
+                ->with('ratings')
+                ->get();
 
-        $articles->transform(function ($article) {
-            $ratings = $article->ratings;
-            $ratingsCount = $ratings->count();
-            $ratingsSum = $ratings->sum('value');
+            $articles->transform(function ($article) {
 
-            $article->average_rating = ($ratingsCount > 0)
-                ? number_format((($ratingsSum / $ratingsCount) * 0.7) + (($ratings->last()->value * 2) / 5 * 0.3), 2)
-                : 0;
+                $ratings = $article->ratings;
+                $ratingsCount = $ratings->count();
+                $ratingsSum = $ratings->sum('value');
+                $reversedRatings = $ratings->reverse();
 
-            return $article;
-        });
+                $last30PercentCount = ceil(0.3 * $ratingsCount);
+                $last30PercentEffect = $reversedRatings->take($last30PercentCount)->sum('value') * 2;
+                $totalEffect = (($ratingsSum- $reversedRatings->take($last30PercentCount)->sum('value')) + $last30PercentEffect)/($ratingsCount + $last30PercentCount);
+                $article->average_rating = ($ratingsCount > 0)
+                    ? number_format($totalEffect, 2)
+                    : 0;
 
-        $list = $articles->sortByDesc('average_rating');
+                return $article;
+            });
 
-            // Makaleleri Redis önbelleğine ekle
+            $list = $articles->sortByDesc('average_rating');
+
             Redis::set('cached_articles', $list->toJson());
-
-            // Önbelleği 5 dakika boyunca sakla (örnek süre, ihtiyaca bağlı olarak değiştirilebilir)
             Redis::expire('cached_articles', 300);
-
         } else {
-            // Redis önbelleği doluysa, makaleleri JSON'dan dönüştür
             $list = json_decode($cachedArticles);
         }
+
         return view('front.index', compact('list'));
     }
+
 
     public function articleDetail(Article $article)
     {
@@ -73,11 +76,14 @@ class FrontController extends Controller
             $ratings = Rating::where('article_id', $articleID)->get();
             $ratingsCount = $ratings->count();
             $ratingsSum = $ratings->sum('value');
+            $reversedRatings = $ratings->reverse();
 
+            $last30PercentCount = ceil(0.3 * $ratingsCount);
+            $last30PercentEffect = $reversedRatings->take($last30PercentCount)->sum('value') * 2;
+            $totalEffect = (($ratingsSum- $reversedRatings->take($last30PercentCount)->sum('value')) + $last30PercentEffect)/($ratingsCount + $last30PercentCount);
             $article->average_rating = ($ratingsCount > 0)
-                ? number_format((($ratingsSum / $ratingsCount) * 0.7) + (($ratings->last()->value * 2) / 5 * 0.3), 2)
+                ? number_format($totalEffect, 2)
                 : 0;
-
 
             Redis::set('cached_article_' . $article->id, $article->toJson());
 
@@ -121,10 +127,16 @@ class FrontController extends Controller
             $ratings = Rating::query()->where('article_id', $articleID)->get();
             $ratingsCount = $ratings->count();
             $ratingsSum = $ratings->sum('value');
+            $reversedRatings = $ratings->reverse();
 
-            $weightedAverage = (($ratingsSum / $ratingsCount) * 0.7) + ((($ratingValue * 2) / 5) * 0.3);
+            $last30PercentCount = ceil(0.3 * $ratingsCount);
+            $last30PercentEffect = $reversedRatings->take($last30PercentCount)->sum('value') * 2;
+            $totalEffect = (($ratingsSum- $reversedRatings->take($last30PercentCount)->sum('value')) + $last30PercentEffect)/($ratingsCount + $last30PercentCount);
+            $average_rating = ($ratingsCount > 0)
+                ? number_format($totalEffect, 2)
+                : 0;
 
-            return response()->json(['success' => true, 'average_rating' => $weightedAverage]);
+            return response()->json(['success' => true, 'average_rating' => $average_rating]);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
